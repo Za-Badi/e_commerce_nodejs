@@ -146,21 +146,22 @@ export const deleteCategory = async (req, res, next) => {
   }
   // delete relivant images from cloudinary
   const categoryPath = `${process.env.UPLOADS_FOLDER}/Categories/${category?.customId}`;
+
+  // delere relivant subcategories from db
+  // const deletedSubCategories = await SubCategory.deleteMany({
+  //   categoryId: _id,
+  // });
+  // // check if subcategories are deleted already
+  // if (deletedSubCategories.deletedCount) {
+  //   // delete the relivant brands from db
+  //   await Brand.deleteMany({ categoryId: _id });
+  //   /**
+  //    * @todo  delete the related products from db
+  //    */
+  // }
   await cloudinaryConfig().api.delete_resources_by_prefix(categoryPath);
   await cloudinaryConfig().api.delete_folder(categoryPath);
 
-  // delere relivant subcategories from db
-  const deletedSubCategories = await SubCategory.deleteMany({
-    categoryId: _id,
-  });
-  // check if subcategories are deleted already
-  if (deletedSubCategories.deletedCount) {
-    // delete the relivant brands from db
-    await Brand.deleteMany({ categoryId: _id });
-    /**
-     * @todo  delete the related products from db
-     */
-  }
 
   res.status(200).json({
     status: "success",

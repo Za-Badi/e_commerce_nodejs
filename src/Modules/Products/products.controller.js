@@ -204,7 +204,6 @@ export const listProducts = async (req, res, next) => {
   // find all products
   // const { page = 1, limit = 5, ...filters } = req.query;
   // const skip = (page - 1) * limit;
-  
 
   // const filtersAsString = JSON.stringify(filters);
   // const replacedFilters = (filtersAsString).replaceAll(/lt|gt|lte|gte|regex|ne|eq/g, (element)=> `$${element}`); 
@@ -221,13 +220,15 @@ export const listProducts = async (req, res, next) => {
   /**
    * @way 2 using paginate method from mongoose-paginate-v2 as schema plugin
    */
-
-  const mangooseQuery = Product.find();
-    const apiFeatureInstance = new ApiFeatures(mangooseQuery, req.query).pagination()
-    .sort().filter();
-
+  const mangooseQuery = Product;
+    const apiFeatureInstance = new ApiFeatures(mangooseQuery, req.query)
+    .sorting()
+    .filter()
+    .pagination()
+    ;
+  
   const products = await apiFeatureInstance.mangooseQuery;
-  // const products = await Product.paginate(parsedFilters,
+  // const products2 = await Product.paginate(parsedFilters,
   //   {
   //     page,
   //     limit,

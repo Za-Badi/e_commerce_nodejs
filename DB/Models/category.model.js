@@ -1,5 +1,8 @@
 // import mongoose from "mongoose";
+import mangoose from "../global-setup.js";
 import mongoose from "../global-setup.js";
+// import { Brand } from "./brand.model.js";
+// import { SubCategory } from "./sub-category.model.js";
 const { Schema, model } = mongoose;
 
 const categorySchema = new Schema(
@@ -40,6 +43,21 @@ const categorySchema = new Schema(
   },
   { timestamps: true }
 );
-
+categorySchema.post("findByIdAndDelete", async function () {
+  const _id = this.getQuery()._id;
+    // delere relivant subcategories from db
+    const deletedSubCategories = await mangoose.models.SubCategory.deleteMany({
+      categoryId: _id,
+    });
+    // check if subcategories are deleted already
+    if (deletedSubCategories.deletedCount) {
+      // delete the relivant brands from db
+      await mangoose.models.Brand.deleteMany({ categoryId: _id });
+      /**
+       * @todo  delete the related products from db
+       */
+    }
+    // next();
+});
 export const Category =
   mongoose.models.Category || model("Category", categorySchema);

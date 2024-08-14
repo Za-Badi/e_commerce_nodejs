@@ -1,5 +1,8 @@
 import mongoose from "../global-setup.js";
-import { hashSync } from "bcrypt";
+const { Schema, model } = mongoose;
+import bcrypt from "bcryptjs";
+// import { hashSync } from "bcrypt";
+
 
 const userSchema = new Schema({
     username: {
@@ -46,10 +49,17 @@ const userSchema = new Schema({
 }, { timestamps: true });
 userSchema.pre("save",  function (next) {
   if (this.isModified("password")) {
-    this.password = hashSync(this.password, +process.env.SALT_ROUNDS);
+    this.password = bcrypt.hashSync(this.password, +process.env.SALT_ROUNDS);
   }
-  return next();
+   next();
 });
+userSchema.pre(["updateOne", "findByIdAndUpdate"], {document: true, query : false} , function (next) {
+    if (this.isModified("password")) {
+      this.password = bcrypt.hashSync(this.password, +process.env.SALT_ROUNDS);
+    }
+     next();
+  });
+
 
 export const User = mongoose.models.User || model("User", userSchema);
 
