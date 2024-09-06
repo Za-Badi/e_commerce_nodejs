@@ -98,7 +98,15 @@ const productSchema = new Schema(
       },
     },
   },
-  { timestamps: true }
+  { timestamps: true, toJSON: { virtuals: true }, toObject: { virtuals: true } }
+);
+
+productSchema.virtual("Review",
+  {
+    ref: "Review",
+    localField: "_id",
+    foreignField: "productId"
+  }
 );
 
 export const Product =

@@ -3,3 +3,8 @@ export * from "./Products/products.routes.js";
 export * from "./Sub-Categories/sub-categories.routes.js";
 export * from "./Brand/brands.routes.js";
 export * from "./User/user.router.js"
+export * from "./Address/address.router.js"
+export * from "./Cart/cart.router.js";
+export * from "./Coupons/coupon.router.js"
+export * from "./Order/order.router.js"
+export * from "./Review/review.router.js"

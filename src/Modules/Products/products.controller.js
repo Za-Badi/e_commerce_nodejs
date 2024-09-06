@@ -7,9 +7,11 @@ import {
   calculateProductPrice,
   cloudinaryConfig,
   ErrorClass,
+  ReviewStatus,
   uploadFile,
 } from "../../Utils/index.js";
 import { ApiFeatures } from "../../Utils/api_features.utils.js";
+import { getSocket } from "../../Utils/socket.io.utils.js";
 
 /**
  * @api {post} /products/add  Add Product
@@ -66,6 +68,8 @@ export const addProduct = async (req, res, next) => {
   };
 
   const newProduct = await Product.create(productObjecy);
+
+  getSocket().emit("newProduct", {message: 'New product added'});
   res.status(201).json({
     status: "success",
     message: "Product created Successfully",
@@ -220,8 +224,13 @@ export const listProducts = async (req, res, next) => {
   /**
    * @way 2 using paginate method from mongoose-paginate-v2 as schema plugin
    */
+
+  // const populate =  {path: "Review"}
+  const populate = {path: "Review" ,match: {reviewStatus: ReviewStatus.Approved}}
   const mangooseQuery = Product;
-    const apiFeatureInstance = new ApiFeatures(mangooseQuery, req.query)
+    const apiFeatureInstance = new ApiFeatures(mangooseQuery, req.query, populate
+    ,
+    )
     .sorting()
     .filter()
     .pagination()

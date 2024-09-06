@@ -1,6 +1,7 @@
 import mongoose from "../global-setup.js";
 const { Schema, model } = mongoose;
 import bcrypt from "bcryptjs";
+import {UserTypes} from "../../src/Utils/index.js"
 // import { hashSync } from "bcrypt";
 
 
@@ -17,12 +18,11 @@ const userSchema = new Schema({
     password: {
         type: String,
         required: true,
-        unique: true
     },
     userType: {
         type: String,
-        required: true,
-        enum:["Buyer","Admin"]
+        default: UserTypes.Buyer,
+        enum: Object.values(UserTypes),
     },
     age: {
         type: Number,
@@ -33,7 +33,8 @@ const userSchema = new Schema({
         type: String,
         required: true,
         enum:["Male","Female"]
-    }, phone: {
+    }, 
+    phone: {
         type: String,
         required: false,
     },
@@ -42,6 +43,16 @@ const userSchema = new Schema({
         default: false
     },
     isMarkedAsDeleted: {
+        type: Boolean,
+        default: false,
+    }, 
+    provider:{
+        type: String,
+        enum: ["System", "GOOGLE", "FACEBOOK", "APPLE"],
+        default: "System"
+      
+    },
+    isLoggedIn: {
         type: Boolean,
         default: false,
     }
